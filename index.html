@@ -763,44 +763,45 @@
         </p>
     </footer>
 
-    <script>
-        // Googleドライブの画像ID (直哉さんの写真22枚)
-        const imageIds = [
-            '14yg13F4YqzigWfwXAgMam9ovHXXRKvOw',
-            '1qs8Pr0bl-ZeOTtghgpVXsHVDPa9aib96',
-            '1StJmpu_PndwIeBxAiiyqV5cOynJEnN9q',
-            '1yt0ufl-FSLzWavvHpmxBxKSzAF4sMFNy',
-            '1co5yA_fgG1-eFwRK-frTmitn0050BK07',
-            '1-w40ZiYZuqrmYnQSwsC5myVh1T-zNRHX',
-            '17Jo6tFDMezovgA-9IcGseZUhNIBSVlon',
-            '1DW2ixCIYDWA_VzX2erBzI6jfC83UgHLb',
-            '1j9SJC1Vsvrs-VHlVTA1d0ENSU9zVJanR',
-            '1weErCwFBdDwcQlON7D5IJSRW8krlXZRR',
-            '1RdXA_NLUA7pRqs32_hpnYgwYfha462_2',
-            '16TubVJjcX7Sz_CWpxrAilBV_hA1Sq_8U',
-            '1KlQ2tjdAtWdQjRVQk_3GNKelynKoh3D0',
-            '1bl3XvY_G0IGjRUst9qd1xkb0vQKcxiUE',
-            '1-DJttoI5eVIrOfsf0HFb46I-tCRdeLG8',
-            '1glBRrQn0_GMX4LtBpBonSCI4JR3k9AJM',
-            '1ki2BBH1LEDbyKv4_61dwTzbRo4FuArvO',
-            '1LZPxc7OhxrCepSTXvqyjesmy9P_1QP8U',
-            '1iChi_tb83pquirkiHWnph1ueyHBjrQoB',
-            '1HFw-RhESOAzxIl9SWWRWzk59h_GrnR_G',
-            '1dzdOpJFfVi3OR9G_oarorBr5iLFCYtQh',
-            '1jQ8BlZ2nx0lWlVrol3ZBc7pBV7pyt-zc'
+        <script>
+        // 1. GoogleドライブのIDではなく、リポジトリにアップロードした「ファイル名」のリストに変更
+        const imageFileNames = [
+            'photo1.jpg', // 実際にアップロードしたファイル名に変更してください
+            'photo2.jpg',
+            'photo3.jpg',
+            'photo4.jpg',
+            'photo5.jpg',
+            'photo6.jpg',
+            'photo7.jpg',
+            'photo8.jpg',
+            'photo9.jpg',
+            'photo10.jpg',
+            'photo11.jpg',
+            'photo12.jpg',
+            'photo13.jpg',
+            'photo14.jpg',
+            'photo15.jpg',
+            'photo16.jpg',
+            'photo17.jpg',
+            'photo18.jpg',
+            'photo19.jpg',
+            'photo20.jpg',
+            'photo21.jpg',
+            'photo22.jpg'
         ];
 
-        // Googleドライブ画像のURLを生成
-        function getGoogleDriveImageUrl(imageId) {
-            return `https://drive.google.com/uc?export=view&id=${imageId}`;
+        // 2. GoogleドライブのURLを生成する関数を、リポジトリ内の画像パスを返すように変更
+        function getImageUrl(fileName) {
+            // 'images/' フォルダに保存した場合の相対パス
+            return `images/${fileName}`; 
         }
 
         // ギャラリーを生成
         function generateGallery() {
             const loading = document.getElementById('loading');
             
-            // 画像URLのリストを作成
-            const imageUrls = imageIds.map(id => getGoogleDriveImageUrl(id));
+            // 3. 変更した関数と配列を使うように修正
+            const imageUrls = imageFileNames.map(name => getImageUrl(name));
 
             // 画像をシャッフル(ランダム化)
             const shuffledImages = [...imageUrls].sort(() => Math.random() - 0.5);
@@ -835,31 +836,22 @@
             loading.style.display = 'none';
         }
 
+        // (以下のコードは変更なし)
         // ページ読み込み時にギャラリーを生成
         window.addEventListener('DOMContentLoaded', generateGallery);
 
         // スクロールで背景色を変化させる(朝→夕方)
         window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollPercentage = Math.min(scrolled / maxScroll, 1);
-            
-            const bgPosition = scrollPercentage * 100;
-            document.querySelector('.animated-bg').style.backgroundPosition = `0% ${bgPosition}%`;
+            // ... (省略) ...
         });
 
         // インターセクションオブザーバー - スクロールアニメーション
         const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
+            // ... (省略) ...
         };
 
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
+            // ... (省略) ...
         }, observerOptions);
 
         document.querySelectorAll('.fade-in, .timeline-item').forEach(el => {
