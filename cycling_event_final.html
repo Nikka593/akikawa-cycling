@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海綿隊 秋の秋川サイクリング 🚴 | 11/22</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --warm: #f5576c;
+            --text: #1a202c;
+            --light: #f7fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'M PLUS Rounded 1c', 'Noto Sans JP', sans-serif;
+            color: var(--text);
+            line-height: 1.8;
+            overflow-x: hidden;
+            background: #0a0a0a;
+        }
+
+        /* スクロールで変化する背景 - 朝→夕方 */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 25%, #FFD700 50%, #FFA500 75%, #FF6347 100%);
+            background-size: 100% 500%;
+            background-position: 0% 0%;
+            transition: background-position 0.3s ease-out;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+        }
+
+        /* フォトギャラリーセクション */
+        .photo-gallery-hero {
+            min-height: 100vh;
+            padding: 4rem 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gallery-title {
+            text-align: center;
+            color: white;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .gallery-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            margin-bottom: 3rem;
+            text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* 横スクロールフォトギャラリー */
+        .scrolling-gallery {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gallery-row {
+            display: flex;
+            gap: 1.5rem;
+            animation: scrollLeft 40s linear infinite;
+            width: fit-content;
+        }
+
+        .gallery-row:nth-child(2) {
+            animation: scrollRight 45s linear infinite;
+            margin-top: 1.5rem;
+        }
+
+        .gallery-row:nth-child(3) {
+            animation: scrollLeft 50s linear infinite;
+            margin-top: 1.5rem;
+        }
+
+        @keyframes scrollLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes scrollRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        .gallery-photo {
+            width: 400px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .gallery-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            padding: 2rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            display: flex;
+            justify-content: center;
+            padding-top: 10px;
+            z-index: 10;
+        }
+
+        .scroll-indicator::before {
+            content: '';
+            width: 6px;
+            height: 10px;
+            background: white;
+            border-radius: 3px;
+            animation: scroll 2s ease-in-out infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(20px); opacity: 0; }
+        }
+
+        .main-content {
+            position: relative;
+            background: linear-gradient(180deg, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 0.8) 100px);
+            padding-top: 100px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 5rem;
+        }
+
+        .event-header {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: white;
+        }
+
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            letter-spacing: 2px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 255, 255, 0.5); }
+        }
+
+        .event-title {
+            font-family: 'Outfit', 'M PLUS Rounded 1c', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 30px rgba(0, 0, 0, 0.5);
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .event-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            opacity: 0.95;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .bento-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 3rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .bento-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .bento-item:hover::before {
+            opacity: 1;
+        }
+
+        .bento-item:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .large {
+            grid-column: span 6;
+        }
+
+        .medium {
+            grid-column: span 4;
+        }
+
+        .small {
+            grid-column: span 3;
+        }
+
+        .bento-item h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+        }
+
+        .bento-item .icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .bento-item p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .timeline-section {
+            margin: 6rem 0;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 4rem);
+            text-align: center;
+            margin-bottom: 4rem;
+            color: white;
+            font-weight: 900;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #667eea 0%, #f5576c 100%);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4rem;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-time {
+            flex: 0 0 45%;
+            text-align: right;
+            padding-right: 3rem;
+        }
+
+        .timeline-time h3 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-content {
+            flex: 0 0 45%;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-content h4 {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .timeline-content p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .cta-section {
+            margin: 6rem 0;
+            padding: 5rem 2rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cta-title {
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: white;
+            margin-bottom: 1.5rem;
+            font-weight: 900;
+        }
+
+        .cta-text {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .info-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-10px);
+        }
+
+        .info-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .info-box ul {
+            list-style: none;
+        }
+
+        .info-box li {
+            padding: 0.7rem 0;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            padding-left: 1.8rem;
+        }
+
+        .info-box li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #f5576c;
+            font-weight: bold;
+        }
+
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            color: white;
+            font-size: 1.2rem;
+            line-height: 2;
+        }
+
+        .emoji {
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-5deg); }
+            75% { transform: translateY(-5px) rotate(5deg); }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-photo {
+                width: 300px;
+                height: 225px;
+            }
+
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 80px;
+            }
+
+            .timeline-time {
+                text-align: left;
+                padding-right: 0;
+                margin-bottom: 1rem;
+            }
+
+            .timeline-icon {
+                left: 30px;
+                transform: translateX(0);
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+
+            .large, .medium, .small {
+                grid-column: span 12;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="grain-overlay"></div>
+
+    <!-- フォトギャラリーヒーローセクション -->
+    <section class="photo-gallery-hero">
+        <h1 class="gallery-title">🚴 海綿隊 秋のサイクリング</h1>
+        <p class="gallery-subtitle">2025年11月22日(土) | 最高の思い出を作ろう ✨</p>
+        
+        <div class="scrolling-gallery">
+            <div class="loading" id="loading">写真を読み込み中...</div>
+            <div class="gallery-row" id="gallery-row-1"></div>
+            <div class="gallery-row" id="gallery-row-2"></div>
+            <div class="gallery-row" id="gallery-row-3"></div>
+        </div>
+
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <!-- メインコンテンツ -->
+    <div class="main-content">
+        <div class="container">
+            <section class="event-header fade-in">
+                <div class="date-badge">2025.11.22 (SAT)</div>
+                <h2 class="event-title">秋の秋川サイクリング 🚴</h2>
+                <p class="event-subtitle">新宿駅 8:30 集合 | 武蔵五日市駅 16:00 解散</p>
+            </section>
+
+            <div class="bento-grid fade-in">
+                <div class="bento-item large">
+                    <span class="icon">🚴</span>
+                    <h3>サイクリング</h3>
+                    <p>秋川渓谷の美しい景色を眺めながら、爽快なサイクリング!自転車は現地でレンタルできます。初心者も大歓迎!</p>
+                </div>
+
+                <div class="bento-item medium">
+                    <span class="icon">♨️</span>
+                    <h3>温泉でリラックス</h3>
+                    <p>瀬音の湯で天然温泉を楽しもう。サイクリングの疲れを癒やして、心身ともにリフレッシュ!</p>
+                </div>
+
+                <div class="bento-item small">
+                    <span class="icon">🎣</span>
+                    <h3>マス釣り</h3>
+                    <p>秋川でマス釣り体験!初心者でも楽しめます。</p>
+                </div>
+
+                <div class="bento-item small">
+                    <span class="icon">🍽️</span>
+                    <h3>美味しいランチ</h3>
+                    <p>地元の食材を使った料理を堪能しよう!</p>
+                </div>
+
+                <div class="bento-item medium">
+                    <span class="icon">🍂</span>
+                    <h3>秋の絶景</h3>
+                    <p>紅葉シーズンの美しい景色を満喫。写真映えスポットがいっぱい!</p>
+                </div>
+
+                <div class="bento-item large">
+                    <span class="icon">👥</span>
+                    <h3>素敵な仲間と</h3>
+                    <p>みんなで楽しむから、思い出も倍増!新しい友達もできるかも。一緒に最高の一日を過ごしましょう!</p>
+                </div>
+            </div>
+
+            <section class="timeline-section fade-in">
+                <h2 class="section-title">
+                    ⏰ <span class="highlight">Schedule</span> for the Day
+                </h2>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-time">
+                            <h3>8:30</h3>
+                        </div>
+                        <div class="timeline-icon">🚉</div>
+                        <div class="timeline-content">
+                            <h4>新宿駅集合</h4>
+                            <p>ホリデー快速あきかわ号で出発!みんなで楽しい旅のスタートです。<strong style="color: #f5576c;">時間厳守でお願いします!</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">
+                            <h3>10:00</h3>
+                        </div>
+                        <div class="timeline-icon">🏯</div>
+                        <div class="timeline-content">
+                            <h4>廣徳寺</h4>
+                            <p>歴史ある美しいお寺を訪問。秋の紅葉が見られるかも!</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">
+                            <h3>11:00</h3>
+                        </div>
+                        <div class="timeline-icon">🌊</div>
+                        <div class="timeline-content">
+                            <h4>秋川渓谷サイクリング</h4>
+                            <p>清流沿いをサイクリング!マイナスイオンをたっぷり浴びて、心も体もリフレッシュ。</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">
+                            <h3>12:00</h3>
+                        </div>
+                        <div class="timeline-icon">🍽️</div>
+                        <div class="timeline-content">
+                            <h4>ランチタイム</h4>
+                            <p><strong>Akigawa base</strong> または <strong>石舟ダイニング</strong>で美味しいランチ!地元の食材を使った料理を楽しもう。</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">
+                            <h3>12:30</h3>
+                        </div>
+                        <div class="timeline-icon">🎣</div>
+                        <div class="timeline-content">
+                            <h4>マス釣り体験</h4>
+                            <p>秋川で本格的なマス釣りに挑戦!初心者でも大丈夫、みんなで楽しもう。</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">
+                            <h3>14:30</h3>
+                        </div>
+                        <div class="timeline-icon">♨️</div>
+                        <div class="timeline-content">
+                            <h4>瀬音の湯</h4>
+                            <p>天然温泉でゆっくりリラックス。サイクリングの疲れを癒やしましょう。</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">
+                            <h3>16:00</h3>
+                        </div>
+                        <div class="timeline-icon">👋</div>
+                        <div class="timeline-content">
+                            <h4>武蔵五日市駅で解散</h4>
+                            <p>楽しい一日もここでおしまい。お疲れさまでした!また次回も楽しみましょう。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section fade-in">
+                <div class="cta-content">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+                    <h2 class="cta-title">さあ、冒険の準備を!</h2>
+                    <p class="cta-text">
+                        自然、グルメ、温泉、釣り、そして素敵な仲間との時間。<br>
+                        忘れられない秋の一日を一緒に過ごしましょう!
+                    </p>
+
+                    <div class="info-boxes">
+                        <div class="info-box">
+                            <h3>📝 持ち物リスト</h3>
+                            <ul>
+                                <li>動きやすい服装</li>
+                                <li><strong style="color: #f5576c;">手袋・上着(寒いので必須!)</strong></li>
+                                <li>タオル(温泉用)</li>
+                                <li>飲み物</li>
+                                <li>日焼け止め</li>
+                                <li>カメラ</li>
+                                <li>現地での費用</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-box">
+                            <h3>💡 ポイント</h3>
+                            <ul>
+                                <li><strong style="color: #f5576c;">11月は寒い!防寒対策必須</strong></li>
+                                <li>自転車は現地レンタル</li>
+                                <li>軽食は駅周辺で購入可</li>
+                                <li>温泉セットお忘れなく</li>
+                                <li>絶景スポット多数</li>
+                                <li>初心者も大歓迎</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-box">
+                            <h3>🎯 おすすめ</h3>
+                            <ul>
+                                <li>防水バッグがあると便利</li>
+                                <li>歩きやすい靴で</li>
+                                <li>小銭も用意しよう</li>
+                                <li>スマホの充電忘れずに</li>
+                                <li>帽子やサングラスも◎</li>
+                                <li>楽しむ気持ちが一番!</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>
+            <span class="emoji">🚴</span> 海綿隊 秋の秋川サイクリング<br>
+            2025年11月22日(土) | 新宿駅 8:30 集合(厳守)
+        </p>
+        <p style="margin-top: 1.5rem; font-size: 1.3rem;">
+            最高の思い出を、みんなで作ろう! <span class="emoji">✨</span>
+        </p>
+    </footer>
+
+    <script>
+        // Googleドライブの画像ID (直哉さんの写真22枚)
+        const imageIds = [
+            '14yg13F4YqzigWfwXAgMam9ovHXXRKvOw',
+            '1qs8Pr0bl-ZeOTtghgpVXsHVDPa9aib96',
+            '1StJmpu_PndwIeBxAiiyqV5cOynJEnN9q',
+            '1yt0ufl-FSLzWavvHpmxBxKSzAF4sMFNy',
+            '1co5yA_fgG1-eFwRK-frTmitn0050BK07',
+            '1-w40ZiYZuqrmYnQSwsC5myVh1T-zNRHX',
+            '17Jo6tFDMezovgA-9IcGseZUhNIBSVlon',
+            '1DW2ixCIYDWA_VzX2erBzI6jfC83UgHLb',
+            '1j9SJC1Vsvrs-VHlVTA1d0ENSU9zVJanR',
+            '1weErCwFBdDwcQlON7D5IJSRW8krlXZRR',
+            '1RdXA_NLUA7pRqs32_hpnYgwYfha462_2',
+            '16TubVJjcX7Sz_CWpxrAilBV_hA1Sq_8U',
+            '1KlQ2tjdAtWdQjRVQk_3GNKelynKoh3D0',
+            '1bl3XvY_G0IGjRUst9qd1xkb0vQKcxiUE',
+            '1-DJttoI5eVIrOfsf0HFb46I-tCRdeLG8',
+            '1glBRrQn0_GMX4LtBpBonSCI4JR3k9AJM',
+            '1ki2BBH1LEDbyKv4_61dwTzbRo4FuArvO',
+            '1LZPxc7OhxrCepSTXvqyjesmy9P_1QP8U',
+            '1iChi_tb83pquirkiHWnph1ueyHBjrQoB',
+            '1HFw-RhESOAzxIl9SWWRWzk59h_GrnR_G',
+            '1dzdOpJFfVi3OR9G_oarorBr5iLFCYtQh',
+            '1jQ8BlZ2nx0lWlVrol3ZBc7pBV7pyt-zc'
+        ];
+
+        // Googleドライブ画像のURLを生成
+        function getGoogleDriveImageUrl(imageId) {
+            return `https://drive.google.com/uc?export=view&id=${imageId}`;
+        }
+
+        // ギャラリーを生成
+        function generateGallery() {
+            const loading = document.getElementById('loading');
+            
+            // 画像URLのリストを作成
+            const imageUrls = imageIds.map(id => getGoogleDriveImageUrl(id));
+
+            // 画像をシャッフル(ランダム化)
+            const shuffledImages = [...imageUrls].sort(() => Math.random() - 0.5);
+
+            const row1 = document.getElementById('gallery-row-1');
+            const row2 = document.getElementById('gallery-row-2');
+            const row3 = document.getElementById('gallery-row-3');
+
+            // 画像要素を作成
+            const createImageElement = (url, alt) => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = alt;
+                img.className = 'gallery-photo';
+                img.loading = 'lazy';
+                return img;
+            };
+
+            // 各行に画像を追加(2回繰り返して無限スクロール効果)
+            shuffledImages.forEach((url, index) => {
+                const row = index % 3 === 0 ? row1 : index % 3 === 1 ? row2 : row3;
+                row.appendChild(createImageElement(url, `秋川サイクリング写真 ${index + 1}`));
+            });
+
+            // 2回目の複製(無限ループ用)
+            shuffledImages.forEach((url, index) => {
+                const row = index % 3 === 0 ? row1 : index % 3 === 1 ? row2 : row3;
+                row.appendChild(createImageElement(url, `秋川サイクリング写真 ${index + 1}`));
+            });
+
+            // ローディング表示を非表示
+            loading.style.display = 'none';
+        }
+
+        // ページ読み込み時にギャラリーを生成
+        window.addEventListener('DOMContentLoaded', generateGallery);
+
+        // スクロールで背景色を変化させる(朝→夕方)
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercentage = Math.min(scrolled / maxScroll, 1);
+            
+            const bgPosition = scrollPercentage * 100;
+            document.querySelector('.animated-bg').style.backgroundPosition = `0% ${bgPosition}%`;
+        });
+
+        // インターセクションオブザーバー - スクロールアニメーション
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in, .timeline-item').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
