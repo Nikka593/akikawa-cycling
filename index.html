@@ -764,33 +764,34 @@
     </footer>
 
         <script>
-        // 1. GoogleドライブのIDではなく、リポジトリにアップロードした「ファイル名」のリストに変更
+        // 1. GitHubにアップロードした22枚の「ファイル名」のリスト
         const imageFileNames = [
-            'photo1.jpg', // 実際にアップロードしたファイル名に変更してください
-            'photo2.jpg',
-            'photo3.jpg',
-            'photo4.jpg',
-            'photo5.jpg',
-            'photo6.jpg',
-            'photo7.jpg',
-            'photo8.jpg',
-            'photo9.jpg',
-            'photo10.jpg',
-            'photo11.jpg',
-            'photo12.jpg',
-            'photo13.jpg',
-            'photo14.jpg',
-            'photo15.jpg',
-            'photo16.jpg',
-            'photo17.jpg',
-            'photo18.jpg',
-            'photo19.jpg',
-            'photo20.jpg',
-            'photo21.jpg',
-            'photo22.jpg'
+            '1748004338737.jpg',
+            '1752283465872.jpg',
+            '2960AE34-8D5B-49C5-8BE7-42A97AF4748B.jpg',
+            'IMG_8358.JPG',
+            'IMG_9114.JPG',
+            'PXL_20230311_114529277.jpg',
+            'PXL_20230512_171524204.jpg',
+            'PXL_20231027_131830932.jpg',
+            'PXL_20240202_132928763.jpg',
+            'PXL_20240623_104014290.jpg',
+            'PXL_20240908_100102301.jpg',
+            'PXL_20240908_100102993.MP.jpg',
+            'PXL_20240927_143537553.jpg',
+            'PXL_20250614_135945267.jpg',
+            'PXL_20250913_051415413.jpg',
+            'PXL_20250926_140646411.jpg',
+            'photo1.jpg',
+            // .HEICから差し替えた5つのファイル
+            'mg_2025_11_13_08_56_53.jpeg',
+            'Img_2025_11_13_08_57_06.jpeg',
+            'Img_2025_11_13_08_57_13.jpeg',
+            'Img_2025_11_13_08_57_25.jpeg',
+            'Img_2025_11_13_08_57_32.jpeg'
         ];
 
-        // 2. GoogleドライブのURLを生成する関数を、リポジトリ内の画像パスを返すように変更
+        // 2. リポジトリ内の画像パスを返すように変更
         function getImageUrl(fileName) {
             // 'images/' フォルダに保存した場合の相対パス
             return `images/${fileName}`; 
@@ -837,21 +838,32 @@
         }
 
         // (以下のコードは変更なし)
+
         // ページ読み込み時にギャラリーを生成
         window.addEventListener('DOMContentLoaded', generateGallery);
 
         // スクロールで背景色を変化させる(朝→夕方)
         window.addEventListener('scroll', () => {
-            // ... (省略) ...
+            const scrolled = window.pageYOffset;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercentage = Math.min(scrolled / maxScroll, 1);
+            
+            const bgPosition = scrollPercentage * 100;
+            document.querySelector('.animated-bg').style.backgroundPosition = `0% ${bgPosition}%`;
         });
 
         // インターセクションオブザーバー - スクロールアニメーション
         const observerOptions = {
-            // ... (省略) ...
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
-            // ... (省略) ...
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
         }, observerOptions);
 
         document.querySelectorAll('.fade-in, .timeline-item').forEach(el => {
